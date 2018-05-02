@@ -42,4 +42,26 @@
 
 - Device camera and microphone
 
+## Course Outline
 
+#### Application Manifest
+
+#### Service Worker Basics
+
+#### Promise & Fetch API
+
+#### Service Worker Caching (Offline Access)
+
+#### Advanced Caching Strategies
+
+#### Caching Dynamic Data with IndexedDB
+
+#### Responsive Design
+
+#### Background Sync
+
+#### Web Push Notifications
+
+#### Media API and Geolocation
+
+#### Automated Service Worker Management
