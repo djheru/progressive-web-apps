@@ -46,6 +46,7 @@
 
 #### Application Manifest
 
+- https://developer.mozilla.org/en-US/docs/Web/Manifest
 - Provides data to the browser, can be used to install on a device
 - Define the homescreen icon
 - named `manifest.json`
@@ -106,7 +107,7 @@
 ```
 - View manifest data in the "Application" tab of dev tools
 - NOTE: Safari/webkit/old IE does not support application manifests. Must use a combination of link/meta tags to provide PWA config
-	```html
+```html
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-set-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="PWAGram">
@@ -126,6 +127,41 @@
 ```
 
 #### Service Worker Basics
+
+- Run on a separate thread than the web page
+- Run in background
+- Have a scope within a given domain
+- Continue to run after pages have been closed
+- Listen for events emitted by different sources
+	- fetch
+		- Triggered by http requests (image, css)
+		- Not AJAX/axios
+		- Can use to return cached files, block, etc
+	- push notification
+		- Sent from a server 
+		- Web Push Notification
+		- Since service worker is running in background, can respond to push even if browser is not open
+	- notification interaction
+		- Respond to interactions with the notifications
+	- background sync
+		- If an action cannot be performed (due to network), it can be saved and processed later
+		- Browser emits an event that the service worker can respond to, re-processing the saved action
+	- lifecycle events
+		- Service worker phase changes (installation, etc)
+		
+##### Service Worker Lifecycle
+
+- A js app loaded by the browser registers a js module as a service worker
+- Installing the SW emits an `install` event
+	- when the installation is done, emits an `activate` event 
+- Service worker now controls all pages of `scope`
+- For existing SWs, the registration process happens on every page load
+	- The SW is only re-installed if the module has changed since the last install
+- Enters Idle mode
+- Terminated
+	- Re-awaken if one of the events are detected
+
+
 
 #### Promise & Fetch API
 
