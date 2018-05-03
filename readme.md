@@ -105,7 +105,7 @@
 }
 ```
 - View manifest data in the "Application" tab of dev tools
-- NOTE: Safari/webkit does not support application manifests. Must use a combination of link/meta tags to provide PWA config
+- NOTE: Safari/webkit/old IE does not support application manifests. Must use a combination of link/meta tags to provide PWA config
 	```html
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-set-status-bar-style" content="black">
@@ -118,6 +118,11 @@
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-144x144.png" sizes="144x144">
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-152x152.png" sizes="152x152">
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-180x180.png" sizes="180x180">
+ 
+  <meta name="msapplication-TileImage" content="/src/images/icons/app-icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#fff">
+
+  <meta name="theme-color" content="#3f51b5">
 ```
 
 #### Service Worker Basics
