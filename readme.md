@@ -164,6 +164,11 @@
 
 #### Non-Lifecycle Events
 
+- e.g. fetch
+
+#### Web App Install Banners
+
+Connect to device from chrome devtools:
 
 
 ### Promise & Fetch API
