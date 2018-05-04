@@ -42,9 +42,10 @@
 
 - Device camera and microphone
 
+
 ## Course Outline
 
-#### Application Manifest
+### Application Manifest
 
 - https://developer.mozilla.org/en-US/docs/Web/Manifest
 - Provides data to the browser, can be used to install on a device
@@ -126,7 +127,7 @@
   <meta name="theme-color" content="#3f51b5">
 ```
 
-#### Service Worker Basics
+### Service Worker Basics
 
 - Run on a separate thread than the web page
 - Run in background
@@ -149,7 +150,7 @@
 	- lifecycle events
 		- Service worker phase changes (installation, etc)
 		
-##### Service Worker Lifecycle
+#### Service Worker Lifecycle
 
 - A js app loaded by the browser registers a js module as a service worker
 - Installing the SW emits an `install` event
@@ -161,15 +162,17 @@
 - Terminated
 	- Re-awaken if one of the events are detected
 
+#### Non-Lifecycle Events
 
 
-#### Promise & Fetch API
 
-#### Service Worker Caching (Offline Access)
+### Promise & Fetch API
 
-#### Advanced Caching Strategies
+### Service Worker Caching (Offline Access)
 
-#### Caching Dynamic Data with IndexedDB
+### Advanced Caching Strategies
+
+### Caching Dynamic Data with IndexedDB
 
 #### Responsive Design
 
