@@ -14,14 +14,14 @@ if('serviceWorker' in navigator) {
 		});
 
 }
-/*
-fetch('http://httpbin.org/ip')
+fetch('https://swapi.co/api/people/1')
 .then(res => {
 	console.log(res);
 	return res.json(); // Converts the response (stream) into json
 })
 .then(responseData => console.log(responseData));
 
+ /*
 fetch('http://httpbin.org/post', {
 	method: 'POST',
 	headers: {
