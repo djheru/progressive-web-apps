@@ -166,10 +166,35 @@
 
 - e.g. fetch
 
-#### Web App Install Banners
+### Setting up Debugging
 
-Connect to device from chrome devtools:
+Connect to android device from chrome devtools:
+1. Enable "developer mode" by clicking on the Android build number 7 times
+2. In developer options, make sure debug options are selected
+3. Connect the device
+4. In chrome dev tools, open the menu and go to "more tools -> remote devices"
+5. In settings, check the "Port forwarding" option and add the port for the local app
+6. Select the device on the left
+7. In the "new tab" field, enter the url
+8. It should open the page on the device
+9. Click "Inspect" for the page
+10. It should open a new developer tools window with remote debug access to the device. Touches, etc will be mirrored between the device and the inspect window
 
+### Web App Install Banners
+
+- In a remote debugging session, go to the "Application" tab in dev tools
+- In the "Manifest" section, click the "Add to homescreen link"
+- See?!?
+- Cancel it
+	- Sometimes you want to defer the "Add to homescreen" option until later
+- Register an event listener to the app
+
+```javascript
+window.addEventListener('beforeinstallprompt', (event) => {
+	console.log('beforeinstallprompt fired', event);
+	event.preventDefault();
+});
+```
 
 ### Promise & Fetch API
 
