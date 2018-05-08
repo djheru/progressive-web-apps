@@ -198,6 +198,36 @@ window.addEventListener('beforeinstallprompt', (event) => {
 
 ### Promise & Fetch API
 
+Promises are the thing. Promises and stuff.
+
+#### Fetch
+
+- Sends HTTP requests
+- `fetch('http://httpbin.org/ip').then(res => console.log(res));`
+
+```javascript
+fetch('http://httpbin.org/ip')
+.then(res => {
+	console.log(res);
+	return res.json(); // Converts the response (stream) into json
+})
+.then(responseData => console.log(responseData));
+
+fetch('http://httpbin.org/post', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({
+		message: 'This is the message'
+	})
+})
+.then(res => {
+	console.log(res);
+	return res.json(); // Converts the response (stream) into json
+})
+.then(responseData => console.log(responseData))
+```
 ### Service Worker Caching (Offline Access)
 
 ### Advanced Caching Strategies

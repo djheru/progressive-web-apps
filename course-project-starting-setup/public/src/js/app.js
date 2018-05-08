@@ -1,5 +1,7 @@
 var deferredPrompt;
-
+if (!window.Promise) {
+	window.Promise = Promise;
+}
 // check for service worker capability
 if('serviceWorker' in navigator) {
 	navigator
@@ -12,6 +14,30 @@ if('serviceWorker' in navigator) {
 		});
 
 }
+/*
+fetch('http://httpbin.org/ip')
+.then(res => {
+	console.log(res);
+	return res.json(); // Converts the response (stream) into json
+})
+.then(responseData => console.log(responseData));
+
+fetch('http://httpbin.org/post', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({
+		message: 'This is the message'
+	})
+})
+.then(res => {
+	console.log(res);
+	return res.json(); // Converts the response (stream) into json
+})
+.then(responseData => console.log(responseData))
+*/
+
 
 window.addEventListener('beforeinstallprompt', (event) => {
 	console.log('beforeinstallprompt fired', event);
