@@ -1,47 +1,95 @@
+
 var deferredPrompt;
+
 if (!window.Promise) {
-	window.Promise = Promise;
+  window.Promise = Promise;
 }
-// check for service worker capability
-if('serviceWorker' in navigator) {
-	navigator
-		.serviceWorker
-		.register('/sw.js', {
-			// scope: '/somedir/'
-		})
-		.then(() => {
-			console.log('registration complete');
-		});
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(function () {
+      console.log('Service worker registered!');
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
 }
-fetch('https://swapi.co/api/people/1')
-.then(res => {
-	console.log(res);
-	return res.json(); // Converts the response (stream) into json
-})
-.then(responseData => console.log(responseData));
 
- /*
-fetch('http://httpbin.org/post', {
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json'
-	},
-	body: JSON.stringify({
-		message: 'This is the message'
-	})
-})
-.then(res => {
-	console.log(res);
-	return res.json(); // Converts the response (stream) into json
-})
-.then(responseData => console.log(responseData))
-*/
-
-
-window.addEventListener('beforeinstallprompt', (event) => {
-	console.log('beforeinstallprompt fired', event);
-	event.preventDefault();
-	deferredPrompt = event;
-	return false;
+window.addEventListener('beforeinstallprompt', function(event) {
+  console.log('beforeinstallprompt fired');
+  event.preventDefault();
+  deferredPrompt = event;
+  return false;
 });
+
+var promise = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    //resolve('This is executed once the timer is done!');
+    reject({code: 500, message: 'An error occurred!'});
+   }, 3000);
+});
+
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://httpbin.org/ip');
+xhr.responseType = 'json';
+
+xhr.onload = function() {
+  console.log(xhr.response);
+};
+
+xhr.onerror = function() {
+  console.log('Error!');
+};
+
+xhr.send();
+
+fetch('https://httpbin.org/ip')
+  .then(function(response) {
+    console.log(response);
+    return response.json();
+  })
+  .then(function(data) {
+    console.log(data);
+  })
+  .catch(function(err) {
+    console.log(err);
+  });
+
+fetch('https://httpbin.org/post', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  mode: 'cors',
+  body: JSON.stringify({message: 'Does this work?'})
+})
+  .then(function(response) {
+    console.log(response);
+    return response.json();
+  })
+  .then(function(data) {
+    console.log(data);
+  })
+  .catch(function(err) {
+    console.log(err);
+  });
+
+// promise.then(function(text) {
+//   return text;
+// }, function(err) {
+//   console.log(err.code, err.message)
+// }).then(function(newText) {
+//   console.log(newText);
+// });
+
+promise.then(function(text) {
+  return text;
+}).then(function(newText) {
+  console.log(newText);
+}).catch(function(err) {
+  console.log(err.code, err.message);
+});
+
+console.log('This is executed right after setTimeout()');

@@ -230,6 +230,25 @@ fetch('http://httpbin.org/post', {
 ```
 ### Service Worker Caching (Offline Access)
 
+#### Providing offline support
+
+- Use cases
+	- Poor/no connection - bad service areas, tunnels, elevator, poor wifi
+	- Network congestion in highly-populated areas
+
+#### Cache API
+
+- Server cache is reliant on network connection
+- Browser cache is managed by browser, so you can't specify assets, etc
+- Cache API also lives in the browser, but is managed by the developer
+- Simple key-value store
+- Key: request, Value: response
+- Accessed from service workers and JS on web pages
+- Service worker can load assets to fill the cache in the background
+- Service worker can use fetch to try for network assets, then fall back to cache
+
+
+
 ### Advanced Caching Strategies
 
 ### Caching Dynamic Data with IndexedDB
