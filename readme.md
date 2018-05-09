@@ -251,8 +251,6 @@ fetch('http://httpbin.org/post', {
 
 - Determine what the application shell consists of. Any static assets such as markup, images, stylesheets, js, etc
 - Set up precaching
-	- Use Cache API during service worker installation
-	- 
 
 
 ### Advanced Caching Strategies
