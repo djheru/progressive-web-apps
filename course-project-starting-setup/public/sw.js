@@ -35,7 +35,14 @@ self.addEventListener('fetch', (event) => { // http fetch
 				if (response) {
 					return response;
 				} else {
-					return fetch(event.request);
+					return fetch(event.request)
+						.then((res) => {
+							return caches.open('dynamic')
+								.then(cache => {
+									cache.put(event.request.url, res.clone()); // Must use res.clone() to avoid consuming the response
+									return res;
+								});
+						});
 				}
 			})
 	);
