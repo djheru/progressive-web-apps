@@ -48,6 +48,12 @@ var onSaveButtonClick = (request) => (e) => {
 };
 */
 
+function clearCards() {
+  while(sharedMomentsArea.hasChildNodes()) {
+    sharedMomentsArea.removeChild(sharedMomentsArea.lastChild)
+  }
+}
+
 function createCard() {
   var cardWrapper = document.createElement('div');
   cardWrapper.className = 'shared-moment-card mdl-card mdl-shadow--2dp';
@@ -77,10 +83,31 @@ function createCard() {
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
+var networkDataReceived = false;
+
+if ('caches' in window) {
+  caches.match(DATA_REQUEST_URI)
+    .then(response => {
+      if (response) {
+        return response.json();
+      }
+    })
+    .then(data => {
+      console.log('from cache', data);
+      if (!networkDataReceived) {
+        clearCards();
+        createCard();
+      }
+    });
+}
+
 fetch(DATA_REQUEST_URI)
   .then(function(res) {
     return res.json();
   })
   .then(function(data) {
+    console.log('from network', data);
+    networkDataReceived = true;
+    clearCards();
     createCard();
   });

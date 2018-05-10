@@ -1,8 +1,9 @@
-var CACHE_VERSION = 'v16';
+var CACHE_VERSION = 'v18';
 var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
 
 var OFFLINE_PAGE = '/offline.html';
+var DATA_REQUEST_URI = 'https://httpbin.org/get';
 
 self.addEventListener('install', (event) => {
 	console.log('[SERVICE WORKER] Installing service worker');
@@ -44,37 +45,49 @@ self.addEventListener('activate', (event) => {
 	);
 	return self.clients.claim(); // Ensures the service workers are activated properly
 });
+
 self.addEventListener('fetch', (event) => { // http fetch
-	console.log('[SERVICE WORKER] Fetching request');
-	// fetch from cache if available
-	event.respondWith(
-		caches.match(event.request)
-			.then((response) => {
-				if (response) {
-					return response;
-				} else {
-					return fetch(event.request)
-						.then((res) => {
-							return caches.open(CACHE_DYNAMIC_NAME)
-								.then(cache => {
-									console.log('fetching: ', event.request);
-									cache
-										.put(event.request.url, res.clone()) // Must use res.clone() to avoid consuming the response
-										.catch(e => console.log('Error in cache PUT request: ', e));
-									return res;
-								});
-						})
-						.catch((e) => {
-							console.log(e);
-							// If a request fails, display the offline page.
-							// This may require adjustment to deal with failed API (JSON) requests, for example
-							// Maybe check the request url and send a offline page OR a JSON 404 message
-							return caches.open(CACHE_STATIC_NAME)
-								.then(cache => {
-									return cache.match(OFFLINE_PAGE);
-								});
-						})
-				}
-			})
-	);
+  console.log('[SERVICE WORKER] Fetching request');
+  let response;
+
+  if (event.request.url.indexOf(DATA_REQUEST_URI) >= 0) { // This is the data url
+		response = caches.open(CACHE_DYNAMIC_NAME)
+      .then(cache => {
+        return fetch(event.request)
+          .then(response => {
+            cache.put(event.request, response.clone());
+            return response;
+          });
+      });
+	} else {
+		response = caches.match(event.request)
+      .then((response) => {
+        if (response) {
+          return response;
+        } else {
+          return fetch(event.request)
+            .then((res) => {
+              return caches.open(CACHE_DYNAMIC_NAME)
+                .then(cache => {
+                  cache
+                    .put(event.request.url, res.clone()) // Must use res.clone() to avoid consuming the response
+                    .catch(e => console.log('Error in cache PUT request: ', e));
+                  return res;
+                });
+            })
+            .catch((e) => {
+              console.log(e);
+              // If a request fails, display the offline page.
+              // This may require adjustment to deal with failed API (JSON) requests, for example
+              // Maybe check the request url and send a offline page OR a JSON 404 message
+              return caches.open(CACHE_STATIC_NAME)
+                .then(cache => {
+                  return cache.match(OFFLINE_PAGE);
+                });
+            });
+        }
+      });
+	}
+
+	event.respondWith(response);
 });
