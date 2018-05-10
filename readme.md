@@ -272,6 +272,12 @@ we are falling back to fetch. After fetch gets the response, add a `then()` and 
 - In the listener, check for `('caches' in window)`
 - If so, open a new cache (e.g. 'user_requested_cache' or some such) and save (cache.add) it there
 
+#### Offline fallback page
+- Create a new file in the main directory, offline.html
+- In the service worker `fetch` listener, we are looking for requests in cache, then falling back to `fetch`
+- If fetch fails, in the `catch` block, we can return the offline.html file
+- `.catch(e => caches.open('static-cache').then(cache => cache.match('/offline.html')));`
+
 
 ### Caching Dynamic Data with IndexedDB
 

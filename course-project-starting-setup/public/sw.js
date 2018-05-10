@@ -1,6 +1,8 @@
-var CACHE_VERSION = 'v14';
+var CACHE_VERSION = 'v16';
 var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
+
+var OFFLINE_PAGE = '/offline.html';
 
 self.addEventListener('install', (event) => {
 	console.log('[SERVICE WORKER] Installing service worker');
@@ -13,6 +15,7 @@ self.addEventListener('install', (event) => {
 				cache.addAll([
 					'/',
 					'/index.html',
+					OFFLINE_PAGE,
 					'/src/js/app.js',
 					'/src/js/feed.js',
 					'/src/js/material.min.js',
@@ -63,6 +66,13 @@ self.addEventListener('fetch', (event) => { // http fetch
 						})
 						.catch((e) => {
 							console.log(e);
+							// If a request fails, display the offline page.
+							// This may require adjustment to deal with failed API (JSON) requests, for example
+							// Maybe check the request url and send a offline page OR a JSON 404 message
+							return caches.open(CACHE_STATIC_NAME)
+								.then(cache => {
+									return cache.match(OFFLINE_PAGE);
+								});
 						})
 				}
 			})
