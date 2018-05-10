@@ -15,7 +15,7 @@
 	- Quick initial load
 	- Functions while offline
 	- Similar to native experience
-	
+
 ## Core Building Blocks
 
 ### Service Workers
@@ -120,7 +120,7 @@
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-144x144.png" sizes="144x144">
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-152x152.png" sizes="152x152">
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-180x180.png" sizes="180x180">
- 
+
   <meta name="msapplication-TileImage" content="/src/images/icons/app-icon-144x144.png">
   <meta name="msapplication-TileColor" content="#fff">
 
@@ -139,7 +139,7 @@
 		- Not AJAX/axios
 		- Can use to return cached files, block, etc
 	- push notification
-		- Sent from a server 
+		- Sent from a server
 		- Web Push Notification
 		- Since service worker is running in background, can respond to push even if browser is not open
 	- notification interaction
@@ -149,12 +149,12 @@
 		- Browser emits an event that the service worker can respond to, re-processing the saved action
 	- lifecycle events
 		- Service worker phase changes (installation, etc)
-		
+
 #### Service Worker Lifecycle
 
 - A js app loaded by the browser registers a js module as a service worker
 - Installing the SW emits an `install` event
-	- when the installation is done, emits an `activate` event 
+	- when the installation is done, emits an `activate` event
 - Service worker now controls all pages of `scope`
 - For existing SWs, the registration process happens on every page load
 	- The SW is only re-installed if the module has changed since the last install
@@ -255,11 +255,23 @@ fetch('http://httpbin.org/post', {
 - Invalidate the cache in the `activate` event. Iterate over the cache keys and delete
 any of the keys that are not the current key
 	- Update the cache key name any time you update an asset that is stored in the cache key
-- Set up dynamic caching by using the `fetch` event. If the item does not exist in the cache, 
+- Set up dynamic caching by using the `fetch` event. If the item does not exist in the cache,
 we are falling back to fetch. After fetch gets the response, add a `then()` and store it in the cache
 
 
 ### Advanced Caching Strategies
+
+#### Caching triggered by user action
+- Turn off dynamic cache temporarily by commenting out the `cache.put` call in the service worker 'fetch' event listener
+- Create a "Save for Offline" type button on some element that is not part of the app shell
+    - Like an item in a list
+    - This is what we'll save for offline view
+- Clear cache (by updating version) and reload
+- See the app? The dynamic caching is turned off, so the element is being loaded every time
+- Add a listener to the button
+- In the listener, check for `('caches' in window)`
+- If so, open a new cache (e.g. 'user_requested_cache' or some such) and save (cache.add) it there
+
 
 ### Caching Dynamic Data with IndexedDB
 
