@@ -11,6 +11,17 @@ button.addEventListener('click', function(event) {
 });
 
 // 1) Register a Service Worker
+if ('serviceWorker' in navigator) {
+  navigator
+      .serviceWorker
+      .register('/sw.js')
+      .then(() => {
+        console.log('[SERVICE WORKER] Service worker registered');
+      })
+      .catch(() => {
+        console.log('[SERVICE WORKER] Error registering service worker');
+      });
+}
 // 2) Identify the AppShell (i.e. core assets your app requires to provide its basic "frame")
 // 3) Precache the AppShell
 // 4) Add Code to fetch the precached assets from cache when needed

@@ -250,7 +250,13 @@ fetch('http://httpbin.org/post', {
 #### Implementing Caching
 
 - Determine what the application shell consists of. Any static assets such as markup, images, stylesheets, js, etc
-- Set up precaching
+- Set up precaching in the `install` event
+- Listen for the `fetch` event and try to retrieve the item from the cache, then fallback to fetch if it isn't cached
+- Invalidate the cache in the `activate` event. Iterate over the cache keys and delete
+any of the keys that are not the current key
+	- Update the cache key name any time you update an asset that is stored in the cache key
+- Set up dynamic caching by using the `fetch` event. If the item does not exist in the cache, 
+we are falling back to fetch. After fetch gets the response, add a `then()` and store it in the cache
 
 
 ### Advanced Caching Strategies
