@@ -83,6 +83,10 @@ function createCard() {
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
+// Data request strategy
+// Attempt to retrieve the data from the network and the cache in parallel
+// Only get from the cache if it's not already received from the network
+
 var networkDataReceived = false;
 
 if ('caches' in window) {

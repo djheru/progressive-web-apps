@@ -1,9 +1,23 @@
-var CACHE_VERSION = 'v18';
+var CACHE_VERSION = 'v19';
 var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
 
 var OFFLINE_PAGE = '/offline.html';
 var DATA_REQUEST_URI = 'https://httpbin.org/get';
+var STATIC_FILES = [
+  '/',
+  '/index.html',
+  OFFLINE_PAGE,
+  '/src/js/app.js',
+  '/src/js/feed.js',
+  '/src/js/material.min.js',
+  '/src/css/app.css',
+  '/src/css/feed.css',
+  '/src/images/main-image.jpg',
+  'https://fonts.googleapis.com/css?family=Roboto:400,700',
+  'https://fonts.googleapis.com/icon?family=Material+Icons',
+  'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
+];
 
 self.addEventListener('install', (event) => {
 	console.log('[SERVICE WORKER] Installing service worker');
@@ -13,20 +27,7 @@ self.addEventListener('install', (event) => {
 			.open(CACHE_STATIC_NAME) // Creates one if it doesn't exist
 			.then((cache) => {
 				console.log('Precaching App Shell');
-				cache.addAll([
-					'/',
-					'/index.html',
-					OFFLINE_PAGE,
-					'/src/js/app.js',
-					'/src/js/feed.js',
-					'/src/js/material.min.js',
-					'/src/css/app.css',
-					'/src/css/feed.css',
-					'/src/images/main-image.jpg',
-					'https://fonts.googleapis.com/css?family=Roboto:400,700',
-					'https://fonts.googleapis.com/icon?family=Material+Icons',
-					'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
-				]);
+				cache.addAll(STATIC_FILES);
 			})
 	);
 });
@@ -51,7 +52,9 @@ self.addEventListener('fetch', (event) => { // http fetch
   let response;
 
   if (event.request.url.indexOf(DATA_REQUEST_URI) >= 0) { // This is the data url
-		response = caches.open(CACHE_DYNAMIC_NAME)
+		// Fetch the request, cache it and return it (Network first)
+		// This supports concurrent requests to cache and fetch as done in feed.js
+    response = caches.open(CACHE_DYNAMIC_NAME)
       .then(cache => {
         return fetch(event.request)
           .then(response => {
@@ -59,7 +62,13 @@ self.addEventListener('fetch', (event) => { // http fetch
             return response;
           });
       });
+  } else if (STATIC_FILES.includes(event.request.url)) {
+  	// respond with cache-only strategy
+		// These files are precached, and every time they're updated, the SW will be too, so the cache will always be fresh
+		response = caches.match(event.request);
 	} else {
+  	// Attempt to respond with the cache first. If it fails, try a fetch. If the fetch succeeds, cache the response and return it.
+		// If the fetch fails, send the offline page
 		response = caches.match(event.request)
       .then((response) => {
         if (response) {
