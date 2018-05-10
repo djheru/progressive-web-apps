@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'v11';
+var CACHE_VERSION = 'v14';
 var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
 
@@ -55,9 +55,9 @@ self.addEventListener('fetch', (event) => { // http fetch
 							return caches.open(CACHE_DYNAMIC_NAME)
 								.then(cache => {
 									console.log('fetching: ', event.request);
-									/*cache
+									cache
 										.put(event.request.url, res.clone()) // Must use res.clone() to avoid consuming the response
-										.catch(e => console.log('Error in cache PUT request: ', e));*/
+										.catch(e => console.log('Error in cache PUT request: ', e));
 									return res;
 								});
 						})

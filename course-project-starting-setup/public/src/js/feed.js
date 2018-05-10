@@ -3,7 +3,7 @@ var createPostArea = document.querySelector('#create-post');
 var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 var sharedMomentsArea = document.querySelector('#shared-moments');
 
-var USER_REQUESTED_CACHE = 'user-requested';
+// var USER_REQUESTED_CACHE = 'user-requested';
 var DATA_REQUEST_URI = 'https://httpbin.org/get';
 var SOME_IMAGE = '/src/images/sf-boat.jpg';
 
@@ -34,6 +34,8 @@ shareImageButton.addEventListener('click', openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 
+/*
+// User triggered caching
 var onSaveButtonClick = (request) => (e) => {
   console.log('save button clicked');
   if ('caches' in window) {
@@ -44,6 +46,7 @@ var onSaveButtonClick = (request) => (e) => {
       });
   }
 };
+*/
 
 function createCard() {
   var cardWrapper = document.createElement('div');
@@ -63,10 +66,12 @@ function createCard() {
   cardSupportingText.className = 'mdl-card__supporting-text';
   cardSupportingText.textContent = 'In San Francisco';
   cardSupportingText.style.textAlign = 'center';
+/* User triggered caching example
   var cardSaveButton = document.createElement('button');
   cardSaveButton.textContent = 'Save Card';
   cardSaveButton.addEventListener('click', onSaveButtonClick(SOME_IMAGE));
   cardSupportingText.append(cardSaveButton);
+*/
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);
   sharedMomentsArea.appendChild(cardWrapper);
