@@ -19,6 +19,20 @@ var STATIC_FILES = [
   'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
 ];
 
+function trimCache(cacheName, maxItems) {
+	caches.open(cacheName)
+		.then(cache =>
+			cache.keys()
+				.then(keys =>
+					(
+						(keys.length > maxItems) ?
+							cache.delete(keys[0])
+								.then(trimCache(cacheName, maxItems)) : null
+					)
+				)
+		);
+}
+
 self.addEventListener('install', (event) => {
 	console.log('[SERVICE WORKER] Installing service worker');
 	// Event has a `waitUntil()` method that awaits promises
@@ -58,6 +72,7 @@ self.addEventListener('fetch', (event) => { // http fetch
       .then(cache => {
         return fetch(event.request)
           .then(response => {
+          	trimCache(CACHE_DYNAMIC_NAME, 3);
             cache.put(event.request, response.clone());
             return response;
           });
@@ -89,10 +104,12 @@ self.addEventListener('fetch', (event) => { // http fetch
               // If a request fails, display the offline page.
               // This may require adjustment to deal with failed API (JSON) requests, for example
               // Maybe check the request url and send a offline page OR a JSON 404 message
-              return caches.open(CACHE_STATIC_NAME)
-                .then(cache => {
-                  return cache.match(OFFLINE_PAGE);
-                });
+              if (event.request.headers.get('accept').includes('text/html')) {
+                return caches.open(CACHE_STATIC_NAME)
+                  .then(cache => {
+                    return cache.match(OFFLINE_PAGE);
+                  });
+							}
             });
         }
       });
