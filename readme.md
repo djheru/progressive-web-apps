@@ -278,15 +278,22 @@ we are falling back to fetch. After fetch gets the response, add a `then()` and 
 - If fetch fails, in the `catch` block, we can return the offline.html file
 - `.catch(e => caches.open('static-cache').then(cache => cache.match('/offline.html')));`
 
-
 ### Caching Dynamic Data with IndexedDB
 
-#### Responsive Design
+- IndexedDB is designed for key-value (json) data
+- Instead of caching the whole HTTP response, it's for the response data
+- Can store data like blobs
+- Can be accessed asynchronously
+- Typically one db per app
+- Can have multiple object store (collection)
+- use npm package idb @jakearchibald
 
-#### Background Sync
+### Responsive Design
 
-#### Web Push Notifications
+### Background Sync
 
-#### Media API and Geolocation
+### Web Push Notifications
 
-#### Automated Service Worker Management
+### Media API and Geolocation
+
+### Automated Service Worker Management

@@ -1,15 +1,19 @@
-var CACHE_VERSION = 'v19';
+importScripts('/src/js/idb.js');
+importScripts('/src/js/utility.js');
+
+var CACHE_VERSION = 'v21';
 var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
 
 var OFFLINE_PAGE = '/offline.html';
-var DATA_REQUEST_URI = 'https://httpbin.org/get';
+var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts.json';
 var STATIC_FILES = [
   '/',
   '/index.html',
   OFFLINE_PAGE,
   '/src/js/app.js',
   '/src/js/feed.js',
+  '/src/js/idb.js',
   '/src/js/material.min.js',
   '/src/css/app.css',
   '/src/css/feed.css',
@@ -68,14 +72,19 @@ self.addEventListener('fetch', (event) => { // http fetch
   if (event.request.url.indexOf(DATA_REQUEST_URI) >= 0) { // This is the data url
 		// Fetch the request, cache it and return it (Network first)
 		// This supports concurrent requests to cache and fetch as done in feed.js
-    response = caches.open(CACHE_DYNAMIC_NAME)
-      .then(cache => {
-        return fetch(event.request)
-          .then(response => {
-          	// trimCache(CACHE_DYNAMIC_NAME, 3);
-            cache.put(event.request, response.clone());
-            return response;
+    response = fetch(event.request)
+      .then(response => {
+        // trimCache(CACHE_DYNAMIC_NAME, 3);
+        // cache.put(event.request, response.clone());
+        // indexedDB
+        var clonedResponse = response.clone();
+        clonedResponse.json()
+          .then(data => {
+            for (var key in data) {
+              writeData('posts', data[key]);
+            }
           });
+        return response;
       });
   } else if (STATIC_FILES.includes(event.request.url)) {
   	// respond with cache-only strategy
