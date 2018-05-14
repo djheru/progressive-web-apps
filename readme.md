@@ -290,6 +290,12 @@ we are falling back to fetch. After fetch gets the response, add a `then()` and 
 
 ### Responsive Design
 
+##### Media Queries
+
+##### Image Responsiveness
+
+#### Animations
+
 ### Background Sync
 
 ### Web Push Notifications

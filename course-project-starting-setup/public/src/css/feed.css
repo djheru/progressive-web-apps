@@ -32,4 +32,21 @@
 
 .shared-moment-card.mdl-card {
   margin: 10px auto;
+  width: 85%;
+}
+
+@media (min-width: 600px) {
+
+  .shared-moment-card.mdl-card {
+    width: 70%;
+  }
+
+}
+
+@media (min-width: 1000px) {
+
+  .shared-moment-card.mdl-card {
+    width: 60%;
+  }
+
 }
