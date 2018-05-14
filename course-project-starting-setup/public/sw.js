@@ -82,7 +82,8 @@ self.addEventListener('fetch', (event) => { // http fetch
 		  .then(() => clonedResponse.json())
 		  .then(data => {
 			  for (var key in data) {
-				  writeData('posts', data[key]);
+				  writeData('posts', data[key])
+				  	// .then(() => deleteItemFromData('posts', key)); // delete a single entry
 			  }
 		  });
         return response;

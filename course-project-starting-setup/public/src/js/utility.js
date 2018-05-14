@@ -27,3 +27,10 @@ var clearAllData = (st) => dbPromise.then(db => {
     store.clear();
     return tx.complete;
 });
+
+var deleteItemFromData = (st, id) => dbPromise.then(db => {
+	var tx = db.transaction(st, 'readwrite');
+	var store = tx.objectStore(st);
+	store.delete(id);
+	return tx.complete;
+});
