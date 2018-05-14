@@ -11,7 +11,7 @@ var writeData = (st, data) =>
     var tx = db.transaction(st, 'readwrite');
     var store = tx.objectStore(st);
     store.put(data);
-    return tx.complete;
+    return tx.complete; // Return tx.complete from write operations
   });
 
 var readAllData = (st) =>
@@ -20,3 +20,10 @@ var readAllData = (st) =>
     var store = tx.objectStore(st);
     return store.getAll();
   });
+
+var clearAllData = (st) => dbPromise.then(db => {
+    var tx = db.transaction(st, 'readwrite');
+    var store = tx.objectStore(st);
+    store.clear();
+    return tx.complete;
+});

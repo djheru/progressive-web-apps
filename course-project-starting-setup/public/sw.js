@@ -78,12 +78,13 @@ self.addEventListener('fetch', (event) => { // http fetch
         // cache.put(event.request, response.clone());
         // indexedDB
         var clonedResponse = response.clone();
-        clonedResponse.json()
-          .then(data => {
-            for (var key in data) {
-              writeData('posts', data[key]);
-            }
-          });
+        clearAllData('posts')
+		  .then(() => clonedResponse.json())
+		  .then(data => {
+			  for (var key in data) {
+				  writeData('posts', data[key]);
+			  }
+		  });
         return response;
       });
   } else if (STATIC_FILES.includes(event.request.url)) {
