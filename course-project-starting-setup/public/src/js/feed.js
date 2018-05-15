@@ -8,7 +8,10 @@ var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts.json';
 var SOME_IMAGE = '/src/images/sf-boat.jpg';
 
 function openCreatePostModal() {
-  createPostArea.style.display = 'block';
+  setTimeout(function() {
+	  createPostArea.style.transform = 'translateY(0)';
+  }, 0);
+
   if (deferredPrompt) {
     deferredPrompt.prompt();
 
@@ -27,7 +30,7 @@ function openCreatePostModal() {
 }
 
 function closeCreatePostModal() {
-  createPostArea.style.display = 'none';
+  createPostArea.style.transform = 'translateY(100vh)';
 }
 
 shareImageButton.addEventListener('click', openCreatePostModal);
