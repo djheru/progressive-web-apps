@@ -128,3 +128,41 @@ self.addEventListener('fetch', (event) => { // http fetch
 
 	event.respondWith(response);
 });
+
+// Listen for sync event
+// sync is emitted when network connectivity is reestablished
+// if network connectivity is consistent, it's emitted as soon as the task is registered
+self.addEventListener('sync', (event) => {
+	console.log('[Service Worker] background sync', event);
+	if (event.tag === 'sync-new-post') {
+		console.log('[Service Worker] syncing new post');
+		event.waitUntil(
+			readAllData('sync-posts')
+				.then(data => {
+					for (var dt of data) {
+						fetch(DATA_REQUEST_URI, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								'Accept': 'application/json'
+							},
+							body: JSON.stringify({
+								id: dt.id,
+								title: dt.title,
+								location: dt.location,
+								image: 'https://firebasestorage.googleapis.com/v0/b/pwagram-b86a4.appspot.com/o/sf-boat.jpg?alt=media&token=54d901a8-b818-4687-be12-5d008ffd9191'
+							})
+						})
+						.then(res => {
+							console.log('sync-new-post', res);
+							if (res.ok) {
+								deleteItemFromData('sync-posts', dt.id);
+							}
+						})
+						.catch(e => console.log('error syncing: ', e));
+					}
+				})
+
+		)
+	}
+});

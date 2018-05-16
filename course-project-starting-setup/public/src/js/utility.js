@@ -3,6 +3,9 @@ var dbPromise = idb.open('posts-store', 1, function (db) {
     db.createObjectStore('posts', {
       keyPath: 'id'
     });
+    db.createObjectStore('sync-posts', {
+      keyPath: 'id'
+    });
   }
 });
 

@@ -298,6 +298,11 @@ we are falling back to fetch. After fetch gets the response, add a `then()` and 
 
 ### Background Sync
 
+- Store requests when offline till you're online
+- `sync` event emitted on service worker when network availability 
+- Service worker can retrieve the data and send on sync event
+
+
 ### Web Push Notifications
 
 ### Media API and Geolocation

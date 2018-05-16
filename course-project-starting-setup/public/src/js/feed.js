@@ -2,6 +2,9 @@ var shareImageButton = document.querySelector('#share-image-button');
 var createPostArea = document.querySelector('#create-post');
 var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 var sharedMomentsArea = document.querySelector('#shared-moments');
+var form = document.querySelector('form');
+var titleInput = document.querySelector('#title');
+var locationInput = document.querySelector('#location');
 
 // var USER_REQUESTED_CACHE = 'user-requested';
 var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts.json';
@@ -139,3 +142,55 @@ fetch(DATA_REQUEST_URI)
     }
     updateUI(dataArray);
   });
+
+function sendData() {
+  fetch(DATA_REQUEST_URI, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+        id: new Date().toISOString(),
+        title: titleInput.value,
+        location: locationInput.value,
+        image: 'https://firebasestorage.googleapis.com/v0/b/pwagram-b86a4.appspot.com/o/sf-boat.jpg?alt=media&token=54d901a8-b818-4687-be12-5d008ffd9191'
+    })
+  })
+    .then(res => {
+      console.log('sendData', res);
+      updateUI();
+    })
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (titleInput.value.trim() === '' || locationInput.value.trim() === '') {
+    alert('Please enter a title and location');
+    return;
+  }
+  closeCreatePostModal();
+
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    navigator.serviceWorker.ready
+      .then(sw => {
+        var post = {
+          title: titleInput.value,
+          location: locationInput.value,
+          id: new Date().toISOString()
+        };
+        writeData('sync-posts', post)
+          .then(() => {
+            return sw.sync.register('sync-new-post'); // register a sync task with the service worker
+          })
+          .then(() => {
+            var snackbarContainer = document.querySelector('#confirmation-toast');
+            var data = { message: 'Your post was submitted for syncing!'};
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+          })
+
+      });
+  } else {
+    sendData();
+  }
+})
