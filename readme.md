@@ -302,6 +302,7 @@ we are falling back to fetch. After fetch gets the response, add a `then()` and 
 - `sync` event emitted on service worker when network availability 
 - Service worker can retrieve the data and send on sync event
 
+https://firebase.google.com/docs/functions/write-firebase-functions
 
 ### Web Push Notifications
 
