@@ -11,6 +11,7 @@ var dbPromise = idb.open('posts-store', 1, function (db) {
 
 var writeData = (st, data) =>
   dbPromise.then(db => {
+    console.log(st, data);
     var tx = db.transaction(st, 'readwrite');
     var store = tx.objectStore(st);
     store.put(data);

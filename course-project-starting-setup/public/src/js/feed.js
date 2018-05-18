@@ -144,7 +144,7 @@ fetch(DATA_REQUEST_URI)
   });
 
 function sendData() {
-  fetch(DATA_REQUEST_URI, {
+  fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

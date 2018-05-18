@@ -7,18 +7,14 @@ const cors = require('cors')({ origin: true });
 
 exports.storePostData = functions.https.onRequest((request, response) => {
 	// Send headers for the CORS
-	cors((request, response) => {
-		admin.database().ref('posts').push({
-			id: request.body.id || '',
-			title: request.body.title || '',
-			location: request.body.location || '',
-			image: request.body.image || ''
-		})
-		.then(() => {
-			response.status(201).json({ message: 'Data saved', id: request.body.id })
-		})
-		.catch(error => {
-			response.status(500).json({ error })
-		})
-	})
+	cors(function (request, response) {
+    admin.database().ref('posts').push({
+      id: request.body.id || '',
+      title: request.body.title || '',
+      location: request.body.location || '',
+      image: request.body.image || ''
+    })
+      .then(() => response.status(201).json({ message: 'Data saved', id: request.body.id }))
+      .catch(error => response.status(500).json({ error }))
+  });
 });

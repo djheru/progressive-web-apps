@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var CACHE_VERSION = 'v22';
+var CACHE_VERSION = 'v25';
 var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
 
@@ -82,6 +82,7 @@ self.addEventListener('fetch', (event) => { // http fetch
 		  .then(() => clonedResponse.json())
 		  .then(data => {
 			  for (var key in data) {
+			  	console.log(data, key)
 				  writeData('posts', data[key])
 				  	// .then(() => deleteItemFromData('posts', key)); // delete a single entry
 			  }
@@ -140,7 +141,7 @@ self.addEventListener('sync', (event) => {
 			readAllData('sync-posts')
 				.then(data => {
 					for (var dt of data) {
-						fetch(DATA_REQUEST_URI, {
+						fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',
