@@ -140,7 +140,7 @@ self.addEventListener('sync', (event) => {
 		event.waitUntil(
 			readAllData('sync-posts')
 				.then(data => {
-					for (var dt of data) {
+					for (const dt of data) {
 						fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
 							method: 'POST',
 							headers: {
@@ -155,12 +155,14 @@ self.addEventListener('sync', (event) => {
 							})
 						})
 						.then(res => {
-							console.log('sync-new-post', res);
+							console.log('[Service Worker] sync-new-post', res);
 							if (res.ok) {
-								deleteItemFromData('sync-posts', dt.id);
+								res.json().then(resData => {
+                  deleteItemFromData('sync-posts', resData.id)
+								});
 							}
 						})
-						.catch(e => console.log('error syncing: ', e));
+						.catch(e => console.log('[Service Worker] error syncing: ', e));
 					}
 				})
 
