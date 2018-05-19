@@ -298,13 +298,26 @@ we are falling back to fetch. After fetch gets the response, add a `then()` and 
 
 ### Background Sync
 
-- Store requests when offline till you're online
-- `sync` event emitted on service worker when network availability 
+- Store requests in indexedDB when offline till you're online
+- `sync` event emitted on service worker when network availability
 - Service worker can retrieve the data and send on sync event
 
 https://firebase.google.com/docs/functions/write-firebase-functions
 
 ### Web Push Notifications
+
+- Show up even when app/browser are closed
+- Increase engagement
+- Workflow:
+    - User enables notification
+    - Display notifications
+    - Trigger from js
+    - Subscription based
+    - Per device subscription
+    - Pushed from external server from the browser
+    - Creating the subscription retrieves the API endpoint to the browser vendor push server
+    - Our backend server calls the API endpoint to push subscription
+    -
 
 ### Media API and Geolocation
 
