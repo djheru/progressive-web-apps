@@ -169,3 +169,15 @@ self.addEventListener('sync', (event) => {
 		)
 	}
 });
+
+self.addEventListener('notificationclick', event => {
+	const notification = event.notification;
+	const action = event.action;
+	console.log('notificationclick', event);
+	if (action === 'confirm') {
+		console.log('confirm was chosen');
+	} else {
+		console.log('not confirmed');
+	}
+  notification.close();
+});
