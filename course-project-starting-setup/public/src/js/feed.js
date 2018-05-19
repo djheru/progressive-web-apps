@@ -193,4 +193,4 @@ form.addEventListener('submit', (e) => {
   } else {
     sendData();
   }
-})
+});

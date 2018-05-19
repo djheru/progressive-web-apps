@@ -6,7 +6,7 @@ var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
 
 var OFFLINE_PAGE = '/offline.html';
-var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts.json';
+var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts';
 var STATIC_FILES = [
   '/',
   '/index.html',
@@ -178,10 +178,36 @@ self.addEventListener('notificationclick', event => {
 		console.log('confirm was chosen');
 	} else {
 		console.log('not confirmed');
+		event.waitUntil(
+			clients.matchAll() // Get all clients managed by this sw
+				.then(clients => {
+					const client = clients.find(c => (c.visibilityState === 'visible'));
+					if (client) {
+						client.navigate('http://localhost:8080');
+						client.focus();
+					} else {
+						clients.openWindow('http://localhost:8080');
+					}
+				})
+		)
 	}
   notification.close();
 });
 
 self.addEventListener('notificationclose', event => {
 	console.log('notification closed', event);
+});
+
+self.addEventListener('push', event => {
+	console.log('push notification received', event);
+	const data = (event.data) ? JSON.parse(event.data.text()) : { title: 'OHAI!', content: 'supdawg' };
+	const options = {
+		body: data.content,
+		icon: '/src/images/icons/app-icon-96x96.png',
+		badge: '/src/images/icons/app-icon-96x96.png'
+	};
+	event.waitUntil(
+		self.registration // The registration is what we need to access to interact with the browser
+			.showNotification(data.title, options)
+	);
 });

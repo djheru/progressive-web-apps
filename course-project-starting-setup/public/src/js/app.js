@@ -72,7 +72,7 @@ const configureSubscription = () => {
         swRegistration.pushManager.getSubscription();
       })
       .then(subscription => {
-        const vapidPublicKey = 'BI9BMSYqtfi4KoJi7xLruePpTZB6x7FHJYRy01aP0Uy-56CevEEodmcZIY1NIDEcs5TjuLxhhMQEehT1r_z9lvU';
+        const vapidPublicKey = 'BEtDTK3X4gFqvvvDL4QZKGAh8ucMC_rbiG4XgpALkq0jZEEusreGzjPmfYbMQn1crjF6WqT-0Fg1g39e9-Vmsj8';
         const convertedKey = urlBase64ToUint8Array(vapidPublicKey);
         if (!subscription) {
           const options = {
