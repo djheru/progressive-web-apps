@@ -1,4 +1,4 @@
-var dbPromise = idb.open('posts-store', 1, function (db) {
+const dbPromise = idb.open('posts-store', 1, function (db) {
   if (!db.objectStoreNames.contains('posts')) {
     db.createObjectStore('posts', {
       keyPath: 'id'
@@ -9,32 +9,47 @@ var dbPromise = idb.open('posts-store', 1, function (db) {
   }
 });
 
-var writeData = (st, data) =>
+const writeData = (st, data) =>
   dbPromise.then(db => {
     console.log(st, data);
-    var tx = db.transaction(st, 'readwrite');
-    var store = tx.objectStore(st);
+    const tx = db.transaction(st, 'readwrite');
+    const store = tx.objectStore(st);
     store.put(data);
     return tx.complete; // Return tx.complete from write operations
   });
 
-var readAllData = (st) =>
+const readAllData = (st) =>
   dbPromise.then(db => {
-    var tx = db.transaction(st, 'readonly');
-    var store = tx.objectStore(st);
+    const tx = db.transaction(st, 'readonly');
+    const store = tx.objectStore(st);
     return store.getAll();
   });
 
-var clearAllData = (st) => dbPromise.then(db => {
-    var tx = db.transaction(st, 'readwrite');
-    var store = tx.objectStore(st);
+const clearAllData = (st) => dbPromise.then(db => {
+    const tx = db.transaction(st, 'readwrite');
+    const store = tx.objectStore(st);
     store.clear();
     return tx.complete;
 });
 
-var deleteItemFromData = (st, id) => dbPromise.then(db => {
-	var tx = db.transaction(st, 'readwrite');
-	var store = tx.objectStore(st);
+const deleteItemFromData = (st, id) => dbPromise.then(db => {
+	const tx = db.transaction(st, 'readwrite');
+	const store = tx.objectStore(st);
 	store.delete(id);
 	return tx.complete;
 });
+
+const urlBase64ToUint8Array = (base64String) => {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+};

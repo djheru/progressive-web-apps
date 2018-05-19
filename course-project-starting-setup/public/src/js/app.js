@@ -62,6 +62,50 @@ const displayConfirmationNotification = () => {
   }
 };
 
+const configureSubscription = () => {
+  if ('serviceWorker' in navigator) {
+    let swReg;
+
+    navigator.serviceWorker.ready
+      .then(swRegistration => {
+        swReg = swRegistration;
+        swRegistration.pushManager.getSubscription();
+      })
+      .then(subscription => {
+        const vapidPublicKey = 'BI9BMSYqtfi4KoJi7xLruePpTZB6x7FHJYRy01aP0Uy-56CevEEodmcZIY1NIDEcs5TjuLxhhMQEehT1r_z9lvU';
+        const convertedKey = urlBase64ToUint8Array(vapidPublicKey);
+        if (!subscription) {
+          const options = {
+            userVisibleOnly: true,
+            applicationServerKey: convertedKey
+          };
+          return swReg.pushManager.subscribe(options); //create new subscription
+        } else {
+          // use/update existing sub
+        }
+      })
+      .then(newSubscription => {
+        return fetch('https://pwagram-b86a4.firebaseio.com/subscriptions.json', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(newSubscription)
+        })
+      })
+      .then(res => {
+        if (res.ok) {
+          displayConfirmationNotification();
+        }
+
+      })
+      .catch(e => console.log(e));
+  } else {
+    return;
+  }
+};
+
 const requestNotificationPermission = (event) => {
   Notification
     .requestPermission(result => {
@@ -69,7 +113,8 @@ const requestNotificationPermission = (event) => {
         console.log('notifications permission denied');
       } else {
         console.log('notifications permission granted');
-        displayConfirmationNotification();
+        // displayConfirmationNotification();
+        configureSubscription();
       }
     });
 };
