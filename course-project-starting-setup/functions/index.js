@@ -37,7 +37,11 @@ exports.storePostData = functions.https.onRequest((request, response) => {
               p256dh: subscription.val().keys.p256dh
             }
           };
-          webpush.sendNotification(pushConfig, JSON.stringify({ title: 'New Post', content: 'New post added!' }))
+          webpush.sendNotification(pushConfig, JSON.stringify({
+            title: 'New Post',
+            content: 'New post added!',
+            openUrl: '/help'
+          }))
             .catch(e => console.log('Web Push error: ', e));
         });
 

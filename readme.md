@@ -317,7 +317,25 @@ https://firebase.google.com/docs/functions/write-firebase-functions
     - Pushed from external server from the browser
     - Creating the subscription retrieves the API endpoint to the browser vendor push server
     - Our backend server calls the API endpoint to push subscription
-    -
+
+#### Web Push Notification
+
+1. Create a key pair using the `web-push` npm lib
+2. The app sends then public key in the app when using the pushManager to subscribe (using the browser vendor)
+3. After the subscription, send the subscription to the server for saving
+4. When a push-worthy event happens, the server iterates over the saved subscriptions, using web-push to send them
+
+#### Resources
+
+https://developers.google.com/web/updates/2016/07/web-push-interop-wins
+
+https://github.com/web-push-libs/web-push
+
+https://developer.mozilla.org/en/docs/Web/API/notification
+
+https://developer.mozilla.org/en/docs/Web/API/Push_API
+
+
 
 ### Media API and Geolocation
 
