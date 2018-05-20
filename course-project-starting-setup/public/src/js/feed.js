@@ -58,6 +58,10 @@ captureButton.addEventListener('click', event => {
   picture = dataURIToBlob(canvasElement.toDataURL());
 });
 
+imagePicker.addEventListener('change', event => {
+  picture = event.target.files[0];
+})
+
 function openCreatePostModal() {
   setTimeout(function() {
 	  createPostArea.style.transform = 'translateY(0)';
@@ -124,7 +128,7 @@ function createCard(data) {
   cardTitle.className = 'mdl-card__title';
   cardTitle.style.backgroundImage = 'url("' + data.image + '")';
   cardTitle.style.backgroundSize = 'cover';
-  cardTitle.style.height = '180px';
+  cardTitle.style.height = '240px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
   cardTitleTextElement.style.color = 'white';
