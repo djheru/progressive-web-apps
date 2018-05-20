@@ -141,18 +141,14 @@ self.addEventListener('sync', (event) => {
 			readAllData('sync-posts')
 				.then(data => {
 					for (const dt of data) {
+						const postData = new FormData();
+						postData.append('id', dt.id);
+						postData.append('title', dt.title);
+						postData.append('location', dt.location);
+						postData.append('file', dt.picture, dt.id + '.png');
 						fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
 							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								'Accept': 'application/json'
-							},
-							body: JSON.stringify({
-								id: dt.id,
-								title: dt.title,
-								location: dt.location,
-								image: 'https://firebasestorage.googleapis.com/v0/b/pwagram-b86a4.appspot.com/o/sf-boat.jpg?alt=media&token=54d901a8-b818-4687-be12-5d008ffd9191'
-							})
+							body: postData
 						})
 						.then(res => {
 							console.log('[Service Worker] sync-new-post', res);

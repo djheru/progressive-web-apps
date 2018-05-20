@@ -10,6 +10,7 @@ var canvasElement = document.querySelector('#canvas');
 var captureButton = document.querySelector('#capture-btn');
 var imagePicker = document.querySelector('#image-picker');
 var imagePickerArea = document.querySelector('#pick-image');
+var picture;
 
 // var USER_REQUESTED_CACHE = 'user-requested';
 var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts.json';
@@ -54,6 +55,7 @@ captureButton.addEventListener('click', event => {
   const context = canvasElement.getContext('2d');
   context.drawImage(videoPlayer, 0, 0, canvas.width, videoPlayer.videoHeight / (videoPlayer.videoWidth / canvas.width));
   videoPlayer.srcObject.getVideoTracks().forEach(track => track.stop());
+  picture = dataURIToBlob(canvasElement.toDataURL());
 });
 
 function openCreatePostModal() {
@@ -194,18 +196,15 @@ fetch(DATA_REQUEST_URI)
   });
 
 function sendData() {
+  const postData = new FormData();
+  const id = new Date().toISOString();
+  postData.append('id', id);
+  postData.append('title', titleInput.value);
+  postData.append('location', locationInput.value);
+  postData.append('file', picture, id + '.png');
   fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-        id: new Date().toISOString(),
-        title: titleInput.value,
-        location: locationInput.value,
-        image: 'https://firebasestorage.googleapis.com/v0/b/pwagram-b86a4.appspot.com/o/sf-boat.jpg?alt=media&token=54d901a8-b818-4687-be12-5d008ffd9191'
-    })
+    body: postData
   })
     .then(res => {
       console.log('sendData', res);
@@ -227,7 +226,8 @@ form.addEventListener('submit', (e) => {
         var post = {
           title: titleInput.value,
           location: locationInput.value,
-          id: new Date().toISOString()
+          id: new Date().toISOString(),
+          picture: picture
         };
         writeData('sync-posts', post)
           .then(() => {
