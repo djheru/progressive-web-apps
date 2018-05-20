@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var CACHE_VERSION = 'v25';
+var CACHE_VERSION = 'v26';
 var CACHE_STATIC_NAME = 'static-' + CACHE_VERSION;
 var CACHE_DYNAMIC_NAME = 'dynamic-' + CACHE_VERSION;
 
