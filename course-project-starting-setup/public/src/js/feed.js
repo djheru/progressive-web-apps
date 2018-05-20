@@ -11,10 +11,44 @@ var captureButton = document.querySelector('#capture-btn');
 var imagePicker = document.querySelector('#image-picker');
 var imagePickerArea = document.querySelector('#pick-image');
 var picture;
+var locationBtn = document.querySelector('#location-btn');
+var locationLoader = document.querySelector('#location-loader');
+var fetchedLocation;
 
 // var USER_REQUESTED_CACHE = 'user-requested';
 var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts.json';
 var SOME_IMAGE = '/src/images/sf-boat.jpg';
+
+locationBtn.addEventListener('click', event => {
+  let sawAlert = false;
+  locationBtn.style.display = 'none';
+  locationLoader.style.display = 'block';
+  navigator.geolocation.getCurrentPosition(position => {
+    locationBtn.style.display = 'inline';
+    locationLoader.style.display = 'none';
+    fetchedLocation = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+    locationInput.value = '[' + fetchedLocation.longitude + ', ' + fetchedLocation.latitude + ']';
+    document.querySelector('#manual-location').classList.add('is-focused');
+  }, error => {
+    console.log(error);
+    locationBtn.style.display = 'inline';
+    locationLoader.style.display = 'none';
+    if (!sawAlert) {
+      sawAlert = true;
+      alert('Unable to fetch location, please enter manually');
+    }
+
+    fetchedLocation = { latitude: null, longitude: null };
+  }, {
+      timeout: 10000
+  });
+});
+
+function initializeLocation() {
+  if (!('geolocation' in navigator)) {
+    locationBtn.style.display = 'none';
+  }
+}
 
 function initializeMedia() {
   if (!('mediaDevices' in navigator)) {
@@ -60,13 +94,14 @@ captureButton.addEventListener('click', event => {
 
 imagePicker.addEventListener('change', event => {
   picture = event.target.files[0];
-})
+});
 
 function openCreatePostModal() {
   setTimeout(function() {
 	  createPostArea.style.transform = 'translateY(0)';
-	  initializeMedia();
   }, 0);
+  initializeMedia();
+  initializeLocation();
 
   if (deferredPrompt) {
     deferredPrompt.prompt();
@@ -90,6 +125,15 @@ function closeCreatePostModal() {
   imagePickerArea.style.display = 'none';
   videoPlayer.style.display = 'none';
   canvasElement.style.display = 'none';
+  locationBtn.style.display = 'inline';
+  captureButton.style.display = 'inline';
+  locationLoader.style.display = 'none';
+  if (videoPlayer.srcObject) {
+    videoPlayer.srcObject.getVideoTracks().forEach(track => track.stop());
+  }
+  setTimeout(() => {
+    createPostArea.style.transform = 'translateY(100vh)';
+  }, 10);
 }
 
 shareImageButton.addEventListener('click', openCreatePostModal);
@@ -205,6 +249,8 @@ function sendData() {
   postData.append('id', id);
   postData.append('title', titleInput.value);
   postData.append('location', locationInput.value);
+  postData.append('rawLocationLat', fetchedLocation.latitude);
+  postData.append('rawLocationLng', fetchedLocation.longitude);
   postData.append('file', picture, id + '.png');
   fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
     method: 'POST',
@@ -231,7 +277,8 @@ form.addEventListener('submit', (e) => {
           title: titleInput.value,
           location: locationInput.value,
           id: new Date().toISOString(),
-          picture: picture
+          picture: picture,
+          rawLocation: fetchedLocation
         };
         writeData('sync-posts', post)
           .then(() => {
