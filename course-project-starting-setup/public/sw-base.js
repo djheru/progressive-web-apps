@@ -80,3 +80,90 @@ workbox.routing.registerRoute(
 
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute([], {});
+
+
+// Listen for sync event
+// sync is emitted when network connectivity is reestablished
+// if network connectivity is consistent, it's emitted as soon as the task is registered
+self.addEventListener('sync', (event) => {
+  console.log('[Service Worker] background sync', event);
+  if (event.tag === 'sync-new-post') {
+    console.log('[Service Worker] syncing new post');
+    event.waitUntil(
+      readAllData('sync-posts')
+        .then(data => {
+          for (const dt of data) {
+            const postData = new FormData();
+            postData.append('id', dt.id);
+            postData.append('title', dt.title);
+            postData.append('location', dt.location);
+            postData.append('rawLocationLat', dt.rawLocation.lat);
+            postData.append('rawLocationLng', dt.rawLocation.lng);
+            postData.append('file', dt.picture, dt.id + '.png');
+            fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
+              method: 'POST',
+              body: postData
+            })
+              .then(res => {
+                console.log('[Service Worker] sync-new-post', res);
+                if (res.ok) {
+                  res.json().then(resData => {
+                    deleteItemFromData('sync-posts', resData.id)
+                  });
+                }
+              })
+              .catch(e => console.log('[Service Worker] error syncing: ', e));
+          }
+        })
+    )
+  }
+});
+
+self.addEventListener('notificationclick', event => {
+  const notification = event.notification;
+  const action = event.action;
+  console.log('notificationclick', event);
+  if (action === 'confirm') {
+    console.log('confirm was chosen');
+  } else {
+    console.log('not confirmed');
+    event.waitUntil(
+      clients.matchAll() // Get all clients managed by this sw
+        .then(clients => {
+          const client = clients.find(c => (c.visibilityState === 'visible'));
+          if (client) {
+            client.navigate(notification.data.url);
+            client.focus();
+          } else {
+            clients.openWindow(notification.data.url);
+          }
+        })
+    )
+  }
+  notification.close();
+});
+
+self.addEventListener('notificationclose', event => {
+  console.log('notification closed', event);
+});
+
+self.addEventListener('push', event => {
+  console.log('push notification received', event);
+  const data = (event.data) ? JSON.parse(event.data.text()) : {
+    title: 'OHAI!',
+    content: 'supdawg',
+    openUrl: '/'
+  };
+  const options = {
+    body: data.content,
+    icon: '/src/images/icons/app-icon-96x96.png',
+    badge: '/src/images/icons/app-icon-96x96.png',
+    data: {
+      url: data.openUrl
+    }
+  };
+  event.waitUntil(
+    self.registration // The registration is what we need to access to interact with the browser
+      .showNotification(data.title, options)
+  );
+});
