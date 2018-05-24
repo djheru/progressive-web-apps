@@ -1,5 +1,14 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox-sw.js");
 
+const googleStaticRoutesRegex = /.*(?:googleapis|gstatic)\.com.*$/;
+const googleStaticRoutesCacheConfig = {
+  cacheName: 'google-static'
+};
+workbox.routing.registerRoute(
+  googleStaticRoutesRegex,
+  workbox.strategies.staleWhileRevalidate(googleStaticRoutesCacheConfig)
+);
+
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute([
   {
@@ -64,7 +73,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "8dd4fe02354e65f9bd24f5b4bfa0e96e"
+    "revision": "e9a8302386ef71cb5af283f609c65eb9"
   },
   {
     "url": "sw.js",
