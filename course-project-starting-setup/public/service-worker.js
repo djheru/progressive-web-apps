@@ -1,12 +1,24 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox-sw.js");
 
 const googleStaticRoutesRegex = /.*(?:googleapis|gstatic)\.com.*$/;
-const googleStaticRoutesCacheConfig = {
-  cacheName: 'google-static'
-};
+const googleStaticCacheName = 'google-static';
 workbox.routing.registerRoute(
   googleStaticRoutesRegex,
-  workbox.strategies.staleWhileRevalidate(googleStaticRoutesCacheConfig)
+  workbox.strategies.staleWhileRevalidate({ cacheName: googleStaticCacheName })
+);
+
+const firebaseStaticRoutesRegex = /.*(?:firebasestorage\.googleapis)\.com.*$/;
+const firebaseStaticCacheName = 'firebase-static';
+workbox.routing.registerRoute(
+  firebaseStaticRoutesRegex,
+  workbox.strategies.staleWhileRevalidate({ cacheName: firebaseStaticCacheName })
+);
+
+const cdnjsRoute = 'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css';
+const cdnjsCacheName = 'cdnjs';
+workbox.routing.registerRoute(
+  cdnjsRoute,
+  workbox.strategies.staleWhileRevalidate({ cacheName: cdnjsCacheName })
 );
 
 workbox.precaching.suppressWarnings();
@@ -73,7 +85,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "e9a8302386ef71cb5af283f609c65eb9"
+    "revision": "7e0c79b8293465939ad8d6eb36c3ad2d"
   },
   {
     "url": "sw.js",
