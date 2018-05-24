@@ -49,5 +49,34 @@ workbox.routing.registerRoute(
     })
 );
 
+const routeFcn = (routeData) => routeData.event.request.headers.get('accept').includes('text/html');
+const dynamicCacheName = 'dynamicCache';
+workbox.routing.registerRoute(
+  routeFcn,
+  (args) => caches.match(args.event.request)
+    .then((response) => {
+      if (response) {
+        return response;
+      } else {
+        return fetch(args.event.request)
+          .then((res) => {
+            return caches.open(dynamicCacheName)
+              .then(cache => {
+                cache
+                  .put(args.event.request.url, res.clone()) // Must use res.clone() to avoid consuming the response
+                  .catch(e => console.log('Error in cache PUT request: ', e));
+                return res;
+              });
+          })
+          .catch((e) => {
+            // If a request fails, display the offline page.
+            // This may require adjustment to deal with failed API (JSON) requests, for example
+            // Maybe check the request url and send a offline page OR a JSON 404 message
+            return caches.match('/offline.html').then(res => res);
+          });
+      }
+    })
+);
+
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute([], {});
