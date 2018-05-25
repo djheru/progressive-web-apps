@@ -90,7 +90,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "index.html",
-    "revision": "708488c2dd1106e5c6aa143ca1a8af3b"
+    "revision": "4d54bba6fc053e0ca0a4050db26bb759"
   },
   {
     "url": "manifest.json",
@@ -106,7 +106,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "src/css/feed.css",
-    "revision": "22b449aa37f8444123dc01b7a340f5a3"
+    "revision": "1b374f15aad34f473004dfde4d78be75"
   },
   {
     "url": "src/css/help.css",
@@ -114,11 +114,11 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "src/js/app.js",
-    "revision": "e34afc8cff5b48cacf1d6d654e7af8f7"
+    "revision": "23ef0ed2f4353ef98630231d9edaeaae"
   },
   {
     "url": "src/js/feed.js",
-    "revision": "09a4d2c992d01cfb3bd2dbd49a18274b"
+    "revision": "5d4e58f787d89a82ce4524ff98dfecc0"
   },
   {
     "url": "src/js/fetch.js",
@@ -142,23 +142,19 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "7bd96cf2ad36c62d231a46f93dc116ad"
-  },
-  {
-    "url": "sw.js",
-    "revision": "e3ad8f35ced16d5a1900f76a21ccb716"
+    "revision": "087182b9ff4e850195fac27ed71fd30b"
   },
   {
     "url": "src/images/main-image-lg.jpg",
-    "revision": "31b19bffae4ea13ca0f2178ddb639403"
+    "revision": "68f278a68a43c4c760d2c190b15c74f1"
   },
   {
     "url": "src/images/main-image-sm.jpg",
-    "revision": "c6bb733c2f39c60e3c139f814d2d14bb"
+    "revision": "8652eb1e654a99cd0cb821d0352e6510"
   },
   {
     "url": "src/images/main-image.jpg",
-    "revision": "5c66d091b0dc200e8e89e56c589821fb"
+    "revision": "72c2650331a0b9d2dcfb2ce3a5554216"
   },
   {
     "url": "src/images/sf-boat.jpg",
@@ -182,8 +178,8 @@ self.addEventListener('sync', (event) => {
             postData.append('id', dt.id);
             postData.append('title', dt.title);
             postData.append('location', dt.location);
-            postData.append('rawLocationLat', dt.rawLocation.lat);
-            postData.append('rawLocationLng', dt.rawLocation.lng);
+            postData.append('rawLocationLat', (dt.rawLocation) ? dt.rawLocation.lat : '');
+            postData.append('rawLocationLng', (dt.rawLocation) ? dt.rawLocation.lng : '');
             postData.append('file', dt.picture, dt.id + '.png');
             fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
               method: 'POST',

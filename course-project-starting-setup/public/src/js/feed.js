@@ -14,10 +14,40 @@ var picture;
 var locationBtn = document.querySelector('#location-btn');
 var locationLoader = document.querySelector('#location-loader');
 var fetchedLocation;
+var geocodingKey = 'AIzaSyDUiPrn4W5pMBMhtlOqLDefcC885evsTL4';
 
 // var USER_REQUESTED_CACHE = 'user-requested';
 var DATA_REQUEST_URI = 'https://pwagram-b86a4.firebaseio.com/posts.json';
 var SOME_IMAGE = '/src/images/sf-boat.jpg';
+
+function getLocationText(lat, lng) {
+  const url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&key=' + geocodingKey;
+  return fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      console.log('data: ', data);
+      if (data && data.results && data.results.length) {
+        const results = data.results;
+        let result = results.find(res => (res.types.includes('neighborhood') && res.types.includes('political')));
+        if (!result) {
+          result = results.find(res => (res.types.includes('locality') && res.types.includes('political')));
+        }
+        if (!result) {
+          result = results.find(res => (res.types.includes('postal_code')));
+        }
+        if (!result) {
+          result = results.find(res => (res.types.includes('administrative_area_level_2') && res.types.includes('political')));
+        }
+        return (result && result.formatted_address) ? result.formatted_address : '[' + lng + ',' + lat + ']';
+      } else {
+        return '[' + lng + ',' + lat + ']';
+      }
+    })
+    .catch(e => {
+      console.log(e);
+      return '[' + lng + ',' + lat + ']';
+    });
+}
 
 locationBtn.addEventListener('click', event => {
   let sawAlert = false;
@@ -28,6 +58,10 @@ locationBtn.addEventListener('click', event => {
     locationLoader.style.display = 'none';
     fetchedLocation = { latitude: position.coords.latitude, longitude: position.coords.longitude };
     locationInput.value = '[' + fetchedLocation.longitude + ', ' + fetchedLocation.latitude + ']';
+    getLocationText(fetchedLocation.latitude, fetchedLocation.longitude)
+      .then((locationString) => {
+        locationInput.value = locationString;
+      });
     document.querySelector('#manual-location').classList.add('is-focused');
   }, error => {
     console.log(error);
@@ -249,11 +283,13 @@ fetch(DATA_REQUEST_URI)
 function sendData() {
   const postData = new FormData();
   const id = new Date().toISOString();
+  const lat = (fetchedLocation) ? fetchedLocation.latitude : '';
+  const lng = (fetchedLocation) ? fetchedLocation.longitude : '';
   postData.append('id', id);
   postData.append('title', titleInput.value);
   postData.append('location', locationInput.value);
-  postData.append('rawLocationLat', fetchedLocation.latitude);
-  postData.append('rawLocationLng', fetchedLocation.longitude);
+  postData.append('rawLocationLat', lat);
+  postData.append('rawLocationLng', lng);
   postData.append('file', picture, id + '.png');
   fetch('https://us-central1-pwagram-b86a4.cloudfunctions.net/storePostData', {
     method: 'POST',
