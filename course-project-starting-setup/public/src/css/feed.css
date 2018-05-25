@@ -13,10 +13,10 @@
 }
 
 #create-post video, #create-post canvas {
-  width: 512px;
-  max-width: 100%;
+  width: 85%;
   display: none;
   margin: auto;
+  margin-top: 8%;
 }
 
 #create-post #pick-image, #create-post #location-loader {
@@ -58,7 +58,7 @@
 @media (min-width: 600px) {
 
   .shared-moment-card.mdl-card {
-    width: 70%;
+    width: 380px;
   }
 
 }
@@ -66,7 +66,7 @@
 @media (min-width: 1000px) {
 
   .shared-moment-card.mdl-card {
-    width: 60%;
+    width: 380px;
   }
 
 }

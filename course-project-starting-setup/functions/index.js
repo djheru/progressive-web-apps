@@ -2,7 +2,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({ origin: true });
 const webpush = require('web-push');
-const formidable = require('formidable');
 const fs = require('fs');
 const UUID = require('uuid-v4');
 const os = require('os');
@@ -112,7 +111,7 @@ exports.storePostData = functions.https.onRequest((request, response) => {
                       JSON.stringify({
                         title: 'New Post',
                         content: 'New Post added!',
-                        openUrl: '/help'
+                        openUrl: '/'
                       })
                     )
                     .catch((err) => {

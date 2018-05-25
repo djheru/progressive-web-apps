@@ -56,7 +56,7 @@ const displayConfirmationNotification = () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
       .then(swRegistration => {
-        swRegistration.showNotification('Subscribed Successfully! (From ServiceWorker)', options);
+        swRegistration.showNotification('Subscribed Successfully!)', options);
       })
   } else {
     new Notification('Subscribed Successfully!', options);
